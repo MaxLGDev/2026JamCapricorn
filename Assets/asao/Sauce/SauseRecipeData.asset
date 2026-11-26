@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 651f05e10febd7e4ba94594bddc1433c, type: 3}
+  m_Name: SauseRecipeData
+  m_EditorClassIdentifier: Assembly-CSharp::RecipeData
+  recipeName: "\u30BD\u30FC\u30B9"
+  recipeImage: {fileID: 0}
+  mainIngredient: {fileID: 11400000, guid: 581c0918b15c8404b9084a604a369dc6, type: 2}
+  ingredients:
+  - {fileID: 11400000, guid: 5c2f02f2365d2644e8a59d59c1d1009c, type: 2}
+  - {fileID: 11400000, guid: 581c0918b15c8404b9084a604a369dc6, type: 2}
+  - {fileID: 11400000, guid: 3ea59ab8c18f6ef4db82094fdc917728, type: 2}
+  requiredTools:
+  - {fileID: 11400000, guid: 93c2ac4d810a92c40a5aad46b6c00575, type: 2}
