@@ -24,7 +24,6 @@ public class RoundManager : MonoBehaviour
     private int availableIngredients = 0;
 
     public int AvailableIngredients => availableIngredients;
-
     public int RequiredNumber => baseRequiredNumber + round - 1;
 
     [Header("Timer UI")]
@@ -53,17 +52,28 @@ public class RoundManager : MonoBehaviour
         StartRound();
     }
 
-    // ラウンド開始
+    // ラウンド開始・リトライ
     public void StartRound()
     {
-        if (currentState != RoundState.Ready)
+        if (currentState != RoundState.Ready &&
+            currentState != RoundState.Fail)
         {
             Debug.LogWarning("Cannot Start Round");
             return;
         }
 
+        // 失敗した場合はラウンドを1に戻す
+        if (currentState == RoundState.Fail)
+        {
+            round = 1;
+            Debug.Log("Round Reset To 1");
+        }
+
+        StopRoundTimer();
+
         currentState = RoundState.Playing;
 
+        // タイマーリセット
         RemainingTime = roundTime;
 
         // 食材数リセット
@@ -106,13 +116,12 @@ public class RoundManager : MonoBehaviour
         }
     }
 
-    // 食材を1個追加（別スクリプトから呼び出す）
+    // 食材を1個追加
     public void AddIngredient()
     {
         if (currentState != RoundState.Playing)
             return;
 
-        // 必要数以上は追加しない
         if (availableIngredients >= RequiredNumber)
             return;
 
@@ -124,7 +133,6 @@ public class RoundManager : MonoBehaviour
 
         OnIngredientAdded?.Invoke();
 
-        // 必要数と同数になったらクリア
         if (availableIngredients == RequiredNumber)
         {
             RoundSuccess();
