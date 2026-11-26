@@ -7,6 +7,9 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class DropZone : MonoBehaviour, IDropHandler
 {
+    [Header("正解の食材")]
+    [SerializeField] private IngredientData _correctIngredient;
+
     /// <summary>
     /// 正解ならtrue、不正解ならfalseを通知するイベント。
     /// Inspectorでラウンド管理側の受け取りメソッドを登録する。
@@ -46,31 +49,51 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        // 受付に失敗した場合は、正解判定や結果通知を行わない。
-        if (!dragAndDrop.AcceptDrop())
+        if (_correctIngredient == null)
         {
+            Debug.LogError(
+                $"[DropZone] {name}: 正解の食材が設定されていません。",
+                this);
             return;
         }
 
-        Debug.Log(
-            $"[DropZone] {name}: {droppedItem.name}を受け付けました。",
-            this);
+        if (dragAndDrop.IngredientData == null)
+        {
+            Debug.LogWarning(
+                $"[DropZone] {name}: {droppedItem.name}のIngredientDataがありません。",
+                this);
+            return;
+        }
 
         // エリア内への受付と、食材の正解・不正解を分けて扱う。
-        bool isCorrect = IsCorrectIngredient(droppedItem);
+        bool isCorrect = IsCorrectIngredient(dragAndDrop.IngredientData);
+
+        if (isCorrect)
+        {
+            // 正解だけドロップ位置に残す。
+            if (!dragAndDrop.AcceptDrop())
+            {
+                return;
+            }
+
+            Debug.Log($"[DropZone] {name}: {droppedItem.name}を受け付けました。", this);
+        }
+        else
+        {
+            Debug.Log($"[DropZone] {name}: {droppedItem.name}は不正解です。元の位置に戻します。", this);
+        }
+
         NotifyResult(isCorrect);
     }
 
     /// <summary>
     /// ドロップされた食材が正解か判定する。
     /// </summary>
-    /// <param name="ingredient">ドロップされた食材。</param>
+    /// <param name="ingredientData">ドロップされた食材。</param>
     /// <returns>正解ならtrue、不正解ならfalse。</returns>
-    private bool IsCorrectIngredient(GameObject ingredient)
+    private bool IsCorrectIngredient(IngredientData ingredientData)
     {
-        // TODO: 食材IDなどを使って正解条件と比較する。
-
-        return false;
+        return ingredientData == _correctIngredient;
     }
 
     /// <summary>
