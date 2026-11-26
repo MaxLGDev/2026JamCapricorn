@@ -8,8 +8,8 @@ public class IngredientSpawner : MonoBehaviour
     [SerializeField] private int round1StartCount = 6;
     [SerializeField] private List<IngredientData> ingredients = new List<IngredientData>();
     [SerializeField] private Ingredient ingredientPrefab;
-    
-    [SerializeField] private List<IngredientData> testRequired; // TEMPORARY UNTIL C DATA
+
+    [SerializeField] private RecipeData recipe;
 
     [SerializeField] private int itemsAddedPerRound = 1;
     [SerializeField] private int maxTotalIngredients = 18;
@@ -34,16 +34,18 @@ public class IngredientSpawner : MonoBehaviour
     private void Spawn(int round)
     {
         Clear(true);
+        
+        var required = recipe.Ingredients.ToList();
 
         int currentRoundIngredients = round1StartCount + itemsAddedPerRound * (round - 1);
         int total = Mathf.Min(currentRoundIngredients, maxTotalIngredients);
-        total = Mathf.Max(total, testRequired.Count);
+        total = Mathf.Max(total, required.Count);
         int bonusCount = Random.Range(0, maxTotalBonusIngredients + 1);
         
         
         var toSpawn = new List<IngredientData>();
 
-        toSpawn.AddRange(testRequired);
+        toSpawn.AddRange(required);
 
         var bonus = ingredients
             .Where(i => i.IsBonus)
@@ -70,7 +72,7 @@ public class IngredientSpawner : MonoBehaviour
             
             Ingredient spawned = Instantiate(ingredientPrefab, spawnedPosition, Quaternion.identity);
 
-            spawned.IsRequired = testRequired.Contains(data);
+            spawned.IsRequired = required.Contains(data);
             spawnedIngredients.Add(spawned);
             spawned.Init(data);
         }
