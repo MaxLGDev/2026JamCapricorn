@@ -14,6 +14,12 @@ public class DragAndDrop : MonoBehaviour,
     [SerializeField] private IngredientData _ingredientData;
 
     /// <summary>
+    /// ログ用の食材名。データ未設定時はオブジェクト名を使用する。
+    /// </summary>
+    private string IngredientDisplayName =>
+        _ingredientData != null ? _ingredientData.IngredientName : name;
+
+    /// <summary>
     /// DropZoneから食材データを参照するためのプロパティ。
     /// </summary>
     public IngredientData IngredientData => _ingredientData;
@@ -65,11 +71,6 @@ public class DragAndDrop : MonoBehaviour,
     private Vector2 _startAnchoredPosition;
 
     /// <summary>
-    /// 今回のドラッグで、ドロップエリアに受け付けられたか。
-    /// </summary>
-    private bool _isDropAccepted;
-
-    /// <summary>
     /// 移動に使用するコンポーネントを取得する。
     /// </summary>
     private void Awake()
@@ -79,7 +80,7 @@ public class DragAndDrop : MonoBehaviour,
 
         if (_ingredientData == null)
         {
-            Debug.LogError($"[DragAndDrop] IngredientDataが設定されていません。", this);
+            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataが設定されていません。", this);
             return;
         }
     }
@@ -99,7 +100,7 @@ public class DragAndDrop : MonoBehaviour,
 
         if (_ingredientData == null)
         {
-            Debug.LogError($"[DragAndDrop] IngredientDataが設定されていません。", this);
+            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataが設定されていません。", this);
             return;
         }
 
@@ -108,7 +109,7 @@ public class DragAndDrop : MonoBehaviour,
 
         if (_dragPlane == null)
         {
-            Debug.LogError($"[DragAndDrop] {name}: 親にRectTransformが必要です。",this);
+            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: 親にRectTransformが必要です。",this);
             return;
         }
 
@@ -120,7 +121,7 @@ public class DragAndDrop : MonoBehaviour,
                 eventData.pressEventCamera,
                 out Vector3 pointerPosition))
         {
-            Debug.LogWarning($"[DragAndDrop] {name}: ドラッグ位置を取得できません。",this);
+            Debug.LogWarning($"[DragAndDrop] {IngredientDisplayName}: ドラッグ位置を取得できません。",this);
             return;
         }
         
@@ -132,11 +133,10 @@ public class DragAndDrop : MonoBehaviour,
         _originalBlocksRaycasts = _canvasGroup.blocksRaycasts;
         _canvasGroup.blocksRaycasts = false;
 
-        // 前回の配置結果を引き継がず、今回の操作の復帰先を保存する。
+        // エリア外や不正解の場合に戻す、今回の開始位置を保存する。
         _startAnchoredPosition = _rectTransform.anchoredPosition;
-        _isDropAccepted = false;
 
-        Debug.Log($"[DragAndDrop] {name}: ドラッグ開始。", this);
+        Debug.Log($"[DragAndDrop] {IngredientDisplayName}: ドラッグ開始。", this);
 
         _onDragStarted.Invoke();
     }
@@ -163,49 +163,57 @@ public class DragAndDrop : MonoBehaviour,
     }
 
     /// <summary>
-    /// 未受付なら開始位置へ戻し、入力設定を復元して終了を通知する。
+    /// DropZoneで処理されなかった場合、開始位置に戻して終了する。
     /// </summary>
-    /// <param name="eventData">UIのポインター操作情報。</param>
     public void OnEndDrag(PointerEventData eventData)
     {
-        // 未開始の操作や、別のポインターによる終了通知を無視する。
         if (!_isDragging || eventData.pointerId != _pointerId) return;
 
-        _isDragging = false;
-
-        if (!_isDropAccepted)
-        {
-            ReturnToStartPosition();
-        }
-
-        Debug.Log(
-            $"[DragAndDrop] {name}: ドラッグ終了。" +
-            $" Itemのposition={_rectTransform.anchoredPosition}",
-            this);
-
-        _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
-        _onDragEnded.Invoke();
+        FinishDrag(false);
     }
 
 
     /// <summary>
-    /// ドロップを受け付け済みにする。
-    /// ドラッグ中でない場合や、すでに受け付けている場合は拒否する。
+    /// DropZoneから呼び出し、判定結果に応じてドラッグを終了する。
     /// </summary>
-    /// <returns>今回の受付に成功した場合はtrue。</returns>
-    public bool AcceptDrop()
+    /// <param name="pointerId">操作したポインターのID。</param>
+    /// <param name="keepPosition">現在位置に残す場合はtrue。</param>
+    /// <returns>終了処理に成功した場合はtrue。</returns>
+    public bool TryCompleteDrop(int pointerId, bool keepPosition)
     {
-        // ドラッグ中でない場合や、すでに受け付けている場合は拒否する。
-        if (!_isDragging || _isDropAccepted)
+        if (!_isDragging || pointerId != _pointerId)
         {
             Debug.LogWarning(
-                $"[DragAndDrop] {name}: ドラッグ中ではないため、受け付けできません。",
+                $"[DragAndDrop] {IngredientDisplayName}: 対象のドラッグは未開始または終了済みです。",
                 this);
             return false;
         }
 
-        _isDropAccepted = true;
+        FinishDrag(keepPosition);
         return true;
+    }
+
+    /// <summary>
+    /// 位置と入力設定を確定してから、終了を通知する。
+    /// </summary>
+    private void FinishDrag(bool keepPosition)
+    {
+        // 通知先から再び呼ばれても、同じ操作を処理しない。
+        _isDragging = false;
+
+        if (!keepPosition)
+        {
+            ReturnToStartPosition();
+        }
+
+        _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
+
+        Debug.Log(
+            $"[DragAndDrop] {IngredientDisplayName}: ドラッグ終了。" +
+            $" UI位置={_rectTransform.anchoredPosition}",
+            this);
+
+        _onDragEnded.Invoke();
     }
 
     /// <summary>
@@ -215,11 +223,12 @@ public class DragAndDrop : MonoBehaviour,
     {
         // 初期位置に戻す。
         _rectTransform.anchoredPosition = _startAnchoredPosition;
-        Debug.Log($"[DragAndDrop] {name}: 元の位置へ戻した。", this);
+        Debug.Log($"[DragAndDrop] {IngredientDisplayName}: 元の位置へ戻した。", this);
     }
 
     /// <summary>
-    /// 無効化時に操作状態と入力設定を復元する。
+    /// 無効化時にドラッグ状態を解除し、レイキャスト設定を復元する。
+    /// 中断時は位置を戻さず、終了イベントも呼び出さない。
     /// </summary>
     private void OnDisable()
     {
@@ -228,6 +237,6 @@ public class DragAndDrop : MonoBehaviour,
         _isDragging = false;
         _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
 
-        Debug.Log($"[DragAndDrop] {name}: 無効化されたためドラッグを中断。",this);
+        Debug.Log($"[DragAndDrop] {IngredientDisplayName}: 無効化されたためドラッグを中断。",this);
     }
 }
