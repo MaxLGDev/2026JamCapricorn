@@ -18,7 +18,7 @@ public class DropZone : MonoBehaviour, IDropHandler
     private UnityEvent<bool> _onDropJudged = new UnityEvent<bool>();
 
     /// <summary>
-    /// ドロップされた食材を受け付け、成功した場合のみ判定結果を通知する。
+    /// 食材を判定し、ドラッグの終了処理を完了してから結果を通知する。
     /// </summary>
     /// <param name="eventData">ドロップ操作の情報。</param>
     public void OnDrop(PointerEventData eventData)
@@ -65,24 +65,15 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        // エリア内への受付と、食材の正解・不正解を分けて扱う。
         bool isCorrect = IsCorrectIngredient(dragAndDrop.IngredientData);
 
-        if (isCorrect)
+        // 正解なら現在位置に残し、不正解なら開始位置へ戻す。
+        if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrect))
         {
-            // 正解だけドロップ位置に残す。
-            if (!dragAndDrop.AcceptDrop())
-            {
-                return;
-            }
-
-            Debug.Log($"[DropZone] {name}: {droppedItem.name}を受け付けました。", this);
-        }
-        else
-        {
-            Debug.Log($"[DropZone] {name}: {droppedItem.name}は不正解です。元の位置に戻します。", this);
+            return;
         }
 
+        // 位置と入力設定の復元後に通知する
         NotifyResult(isCorrect);
     }
 
