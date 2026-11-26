@@ -148,9 +148,6 @@ Packages/packages-lock.json linguist-generated
 *.pdb                   lfs
 *.so                    lfs
 
-# Fonts
-*.otf                   lfs
-*.ttf                   lfs
 
 # Executable/Installer
 *.apk                   lfs

@@ -3,7 +3,9 @@ using UnityEngine;
 public class IngredientData : ScriptableObject
 {
     [Header("材料の名前")]
-    [SerializeField] private string ingredientName;
+    public string IngredientName;
     [Header("材料の画像")]
-    [SerializeField] private Sprite ingredientImage;
+    public Sprite IngredientSprite;
+    
+    public bool IsBonus;
 }
