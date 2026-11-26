@@ -10,15 +10,17 @@ using UnityEngine.EventSystems;
 public class DragAndDrop : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    /// <summary>
-    /// ドラッグ開始時に呼び出すイベント。
-    /// </summary>
-    [SerializeField]
-    private UnityEvent _onDragStarted = new UnityEvent();
+    [Header("食材データ")]
+    [SerializeField] private IngredientData _ingredientData;
 
     /// <summary>
-    /// ドラッグ終了時に呼び出すイベント。
+    /// DropZoneから食材データを参照するためのプロパティ。
     /// </summary>
+    public IngredientData IngredientData => _ingredientData;
+
+    [Header("ドラッグイベント")]
+    [SerializeField]
+    private UnityEvent _onDragStarted = new UnityEvent();
     [SerializeField]
     private UnityEvent _onDragEnded = new UnityEvent();
 
@@ -74,6 +76,12 @@ public class DragAndDrop : MonoBehaviour,
     {
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
+
+        if (_ingredientData == null)
+        {
+            Debug.LogError($"[DragAndDrop] IngredientDataが設定されていません。", this);
+            return;
+        }
     }
 
     /// <summary>
@@ -86,6 +94,12 @@ public class DragAndDrop : MonoBehaviour,
         // 操作の重複と、右クリックなどでのドラッグを防ぐ。
         if (_isDragging || eventData.button != PointerEventData.InputButton.Left)
         {
+            return;
+        }
+
+        if (_ingredientData == null)
+        {
+            Debug.LogError($"[DragAndDrop] IngredientDataが設定されていません。", this);
             return;
         }
 
@@ -158,6 +172,7 @@ public class DragAndDrop : MonoBehaviour,
         if (!_isDragging || eventData.pointerId != _pointerId) return;
 
         _isDragging = false;
+
         if (!_isDropAccepted)
         {
             ReturnToStartPosition();
@@ -167,8 +182,8 @@ public class DragAndDrop : MonoBehaviour,
             $"[DragAndDrop] {name}: ドラッグ終了。" +
             $" Itemのposition={_rectTransform.anchoredPosition}",
             this);
-        _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
 
+        _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
         _onDragEnded.Invoke();
     }
 
@@ -180,19 +195,11 @@ public class DragAndDrop : MonoBehaviour,
     /// <returns>今回の受付に成功した場合はtrue。</returns>
     public bool AcceptDrop()
     {
-        if (!_isDragging)
+        // ドラッグ中でない場合や、すでに受け付けている場合は拒否する。
+        if (!_isDragging || _isDropAccepted)
         {
             Debug.LogWarning(
-                $"[DragAndDrop] {name}: ドラッグ中ではないため受け付けできません。",
-                this);
-            return false;
-        }
-
-        // 同じ操作に対する重複した判定・通知を防ぐ。
-        if (_isDropAccepted)
-        {
-            Debug.LogWarning(
-                $"[DragAndDrop] {name}: このドロップはすでに受け付け済みです。",
+                $"[DragAndDrop] {name}: ドラッグ中ではないため、受け付けできません。",
                 this);
             return false;
         }
