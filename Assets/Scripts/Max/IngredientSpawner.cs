@@ -6,9 +6,10 @@ using Random = UnityEngine.Random;
 public class IngredientSpawner : MonoBehaviour
 {
     [SerializeField] private int round1StartCount = 6;
-    [SerializeField] private List<Ingredient> ingredients = new List<Ingredient>();
+    [SerializeField] private List<IngredientData> ingredients = new List<IngredientData>();
+    [SerializeField] private Ingredient ingredientPrefab;
     
-    [SerializeField] private List<Ingredient> testRequired; // TEMPORARY UNTIL C DATA
+    [SerializeField] private List<IngredientData> testRequired; // TEMPORARY UNTIL C DATA
 
     [SerializeField] private int itemsAddedPerRound = 1;
     [SerializeField] private int maxTotalIngredients = 18;
@@ -40,7 +41,7 @@ public class IngredientSpawner : MonoBehaviour
         int bonusCount = Random.Range(0, maxTotalBonusIngredients + 1);
         
         
-        var toSpawn = new List<Ingredient>();
+        var toSpawn = new List<IngredientData>();
 
         toSpawn.AddRange(testRequired);
 
@@ -61,16 +62,17 @@ public class IngredientSpawner : MonoBehaviour
             .ToList();
         toSpawn.AddRange(decoys);
         
-        foreach(Ingredient ingredient in toSpawn)
+        foreach(IngredientData data in toSpawn)
         {
             float x = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
             float y = Random.Range(spawnArea.bounds.min.y, spawnArea.bounds.max.y);
             Vector2 spawnedPosition = new Vector2(x, y);
             
-            Ingredient spawned = Instantiate(ingredient, spawnedPosition, Quaternion.identity);
+            Ingredient spawned = Instantiate(ingredientPrefab, spawnedPosition, Quaternion.identity);
 
-            spawned.IsRequired = testRequired.Contains(ingredient);
+            spawned.IsRequired = testRequired.Contains(data);
             spawnedIngredients.Add(spawned);
+            spawned.Init(data);
         }
         
         Debug.Log($"[Spawner] Spawn round {round}, Bonus count: {bonusCount}, {total}, {toSpawn.Count}");
