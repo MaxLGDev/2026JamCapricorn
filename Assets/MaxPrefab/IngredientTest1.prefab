@@ -9,12 +9,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -1373276753855996666, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 980e9e739bb1b1d4b97ba6772eb72282, type: 3}
+    - target: {fileID: -1373276753855996666, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
       propertyPath: m_Color.b
-      value: 0.1273585
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -1373276753855996666, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
       propertyPath: m_Color.g
-      value: 0.1273585
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -1373276753855996666, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
       propertyPath: m_Color.r
@@ -46,11 +50,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4052567084342769497, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4052567084342769497, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4052567084342769497, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
       propertyPath: m_LocalScale.x

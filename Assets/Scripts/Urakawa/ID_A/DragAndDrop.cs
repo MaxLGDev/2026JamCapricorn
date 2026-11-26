@@ -3,10 +3,10 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// UIのImageなどをドラッグし、離した位置に配置する。
-/// ドラッグ開始・終了時にUnityEventで他の処理へ通知する。
+/// UIをドラッグし、ドロップが受け付けられなければ開始位置に戻す。
+/// ドラッグ中は親のRectTransformを変更しない前提。
 /// </summary>
-[RequireComponent(typeof(RectTransform))]
+[RequireComponent(typeof(RectTransform)), RequireComponent(typeof(CanvasGroup))]
 public class DragAndDrop : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -26,6 +26,16 @@ public class DragAndDrop : MonoBehaviour,
     /// 移動対象のUIのRectTransform。
     /// </summary>
     private RectTransform _rectTransform;
+
+    /// <summary>
+    /// 移動対象のUIのCanvasGroup。
+    /// </summary>
+    private CanvasGroup _canvasGroup;
+
+    /// <summary>
+    /// ドラッグ開始前のレイキャスト設定。
+    /// </summary>
+    private bool _originalBlocksRaycasts;
 
     /// <summary>
     /// マウス位置を変換する基準となる親UIの平面。
@@ -48,11 +58,22 @@ public class DragAndDrop : MonoBehaviour,
     private int _pointerId;
 
     /// <summary>
+    /// ドラッグ開始時のUI位置。
+    /// </summary>
+    private Vector2 _startAnchoredPosition;
+
+    /// <summary>
+    /// 今回のドラッグで、ドロップエリアに受け付けられたか。
+    /// </summary>
+    private bool _isDropAccepted;
+
+    /// <summary>
     /// 移動に使用するコンポーネントを取得する。
     /// </summary>
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
+        _canvasGroup = GetComponent<CanvasGroup>();
     }
 
     /// <summary>
@@ -79,7 +100,6 @@ public class DragAndDrop : MonoBehaviour,
 
         // 最初に押した位置とのずれを維持する。
         // pressEventCameraはCanvasに対応するカメラを渡す。
-        // Screen Space - Overlayの場合はnullになり、そのまま使用できる。
         if (!RectTransformUtility.ScreenPointToWorldPointInRectangle(
                 _dragPlane,
                 eventData.pressPosition,
@@ -89,10 +109,18 @@ public class DragAndDrop : MonoBehaviour,
             Debug.LogWarning($"[DragAndDrop] {name}: ドラッグ位置を取得できません。",this);
             return;
         }
-
-        _offset = _rectTransform.position - pointerPosition;
+        
+        _offset = _rectTransform.position - pointerPosition; // クリックした位置との差を保持する。
         _pointerId = eventData.pointerId;
         _isDragging = true;
+
+        // 背後のDropZoneが入力を受け取れるよう、一時的に無効化する。
+        _originalBlocksRaycasts = _canvasGroup.blocksRaycasts;
+        _canvasGroup.blocksRaycasts = false;
+
+        // 前回の配置結果を引き継がず、今回の操作の復帰先を保存する。
+        _startAnchoredPosition = _rectTransform.anchoredPosition;
+        _isDropAccepted = false;
 
         Debug.Log($"[DragAndDrop] {name}: ドラッグ開始。", this);
 
@@ -121,8 +149,7 @@ public class DragAndDrop : MonoBehaviour,
     }
 
     /// <summary>
-    /// ドラッグを終了し、終了イベントを呼び出す。
-    /// 配置先の判定や元の位置への復帰は、このメソッドでは行わない。
+    /// 未受付なら開始位置へ戻し、入力設定を復元して終了を通知する。
     /// </summary>
     /// <param name="eventData">UIのポインター操作情報。</param>
     public void OnEndDrag(PointerEventData eventData)
@@ -131,23 +158,68 @@ public class DragAndDrop : MonoBehaviour,
         if (!_isDragging || eventData.pointerId != _pointerId) return;
 
         _isDragging = false;
+        if (!_isDropAccepted)
+        {
+            ReturnToStartPosition();
+        }
 
         Debug.Log(
             $"[DragAndDrop] {name}: ドラッグ終了。" +
             $" Itemのposition={_rectTransform.anchoredPosition}",
             this);
+        _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
 
         _onDragEnded.Invoke();
     }
 
+
     /// <summary>
-    /// オブジェクトまたはスクリプトの無効化時に操作状態を解除する。
+    /// ドロップを受け付け済みにする。
+    /// ドラッグ中でない場合や、すでに受け付けている場合は拒否する。
+    /// </summary>
+    /// <returns>今回の受付に成功した場合はtrue。</returns>
+    public bool AcceptDrop()
+    {
+        if (!_isDragging)
+        {
+            Debug.LogWarning(
+                $"[DragAndDrop] {name}: ドラッグ中ではないため受け付けできません。",
+                this);
+            return false;
+        }
+
+        // 同じ操作に対する重複した判定・通知を防ぐ。
+        if (_isDropAccepted)
+        {
+            Debug.LogWarning(
+                $"[DragAndDrop] {name}: このドロップはすでに受け付け済みです。",
+                this);
+            return false;
+        }
+
+        _isDropAccepted = true;
+        return true;
+    }
+
+    /// <summary>
+    /// UIを今回のドラッグ開始位置に戻す。
+    /// </summary>
+    private void ReturnToStartPosition()
+    {
+        // 初期位置に戻す。
+        _rectTransform.anchoredPosition = _startAnchoredPosition;
+        Debug.Log($"[DragAndDrop] {name}: 元の位置へ戻した。", this);
+    }
+
+    /// <summary>
+    /// 無効化時に操作状態と入力設定を復元する。
     /// </summary>
     private void OnDisable()
     {
         if (!_isDragging) return;
 
         _isDragging = false;
+        _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
 
         Debug.Log($"[DragAndDrop] {name}: 無効化されたためドラッグを中断。",this);
     }
