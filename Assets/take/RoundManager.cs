@@ -1,6 +1,6 @@
+
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
@@ -14,39 +14,42 @@ public enum RoundState
 
 public class RoundManager : MonoBehaviour
 {
-    // ラウンド情報
     [Header("Round Settings")]
     [SerializeField] private int round = 1;
     [SerializeField] private float roundTime = 10f;
 
-    // タイマー表示
+    [Header("Ingredient Settings")]
+    [SerializeField] private int baseRequiredNumber = 3;
+
+    private int availableIngredients = 0;
+
+    public int AvailableIngredients => availableIngredients;
+
+    public int RequiredNumber => baseRequiredNumber + round - 1;
+
     [Header("Timer UI")]
     [SerializeField] private TMP_Text timerText;
 
     private RoundState currentState = RoundState.Ready;
     private Coroutine roundTimer;
 
-    // Unity Events
     [Header("Round Events")]
     public UnityEvent OnRoundStart;
     public UnityEvent OnRoundSuccess;
     public UnityEvent OnRoundFail;
     public UnityEvent OnNextRound;
 
-    // 現在のラウンド
-    public int CurrentRound => round;
+    [Header("Ingredient Events")]
+    public UnityEvent OnIngredientAdded;
 
-    // 現在の状態
+    public int CurrentRound => round;
     public RoundState CurrentState => currentState;
 
-    // 残り時間
     public float RemainingTime { get; private set; }
 
-    // 初期化
     private void Start()
     {
         Debug.Log("RoundManager Initialized");
-
         StartRound();
     }
 
@@ -62,9 +65,14 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.Playing;
 
         RemainingTime = roundTime;
+
+        // 食材数リセット
+        availableIngredients = 0;
+
         UpdateTimerText();
 
         Debug.Log($"Round {round} Started");
+        Debug.Log($"Required Number: {RequiredNumber}");
 
         OnRoundStart?.Invoke();
 
@@ -89,12 +97,37 @@ public class RoundManager : MonoBehaviour
         RoundFail();
     }
 
-    // タイマー表示更新
+    // タイマー表示
     private void UpdateTimerText()
     {
         if (timerText != null)
         {
             timerText.text = RemainingTime.ToString("F1");
+        }
+    }
+
+    // 食材を1個追加（別スクリプトから呼び出す）
+    public void AddIngredient()
+    {
+        if (currentState != RoundState.Playing)
+            return;
+
+        // 必要数以上は追加しない
+        if (availableIngredients >= RequiredNumber)
+            return;
+
+        availableIngredients++;
+
+        Debug.Log(
+            $"Ingredient Added: {availableIngredients}/{RequiredNumber}"
+        );
+
+        OnIngredientAdded?.Invoke();
+
+        // 必要数と同数になったらクリア
+        if (availableIngredients == RequiredNumber)
+        {
+            RoundSuccess();
         }
     }
 
