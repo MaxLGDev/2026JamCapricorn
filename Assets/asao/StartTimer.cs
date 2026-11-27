@@ -5,21 +5,25 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
 {
     [SerializeField] public TextMeshProUGUI timerText;
     [SerializeField] public TextMeshProUGUI recipeText;        // 料理名
-    [SerializeField] public TextMeshProUGUI ingredientsText;   // ← 追加: 必要食材を出すテキスト
+    [SerializeField] public TextMeshProUGUI ingredientsText;   // 必要食材を出すテキスト
+    [SerializeField] public TextMeshProUGUI toolsText;         // ← 追加: 必要な道具を出すテキスト
     [SerializeField] public RecipeData[] recipes;
+  //  [SerializeField] public ToolData[] tools;   // StartTimerのInspectorで直接登録
+
     [SerializeField] public float countTime = 3f;
     [SerializeField] public float hideDelay = 1f;
     public UnityEvent onCountdownFinished;
 
     public RecipeData CurrentRecipe { get; private set; }
 
-    private void Start()
+    public void Start()
     {
         recipeText.text = "";
         ingredientsText.text = "";
+        toolsText.text = ""; // ← 追加
     }
 
-    private void Update()
+    public void Update()
     {
         if (countTime <= 0f) return;
 
@@ -38,7 +42,7 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
         }
     }
 
-    private void ShowRecipe()
+    public void ShowRecipe()
     {
         if (recipes == null || recipes.Length == 0)
         {
@@ -49,20 +53,31 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
         CurrentRecipe = recipes[Random.Range(0, recipes.Length)];
         recipeText.text = CurrentRecipe.RecipeName;
         ShowIngredients();
+        ShowTools(); // ← 追加
     }
 
-    private void ShowIngredients()
+    public void ShowIngredients()
     {
         string text = "必要な材料\n";
-        foreach (var item in CurrentRecipe.Ingredients)   // ← 変数名は実際のものに合わせる
+        foreach (var item in CurrentRecipe.Ingredients)
         {
-            if (item == null) continue;                   // 未設定の欄はスキップ
-            text += "・" + item.IngredientName + "\n";    // ← 食材名の変数名も合わせる
+            if (item == null) continue;
+            text += "・" + item.IngredientName + "\n";
         }
         ingredientsText.text = text;
     }
+    private void ShowTools()
+    {
+        string text = "必要な道具\n";
+        foreach (var tool in CurrentRecipe.RequiredTool)   // ← Tools ではなく RequiredTool
+        {
+            if (tool == null) continue;
+            text += "・" + tool.toolName + "\n";
+        }
+        toolsText.text = text;
+    }
 
-    private void HideTimer()
+    public void HideTimer()
     {
         timerText.gameObject.SetActive(false);
     }
