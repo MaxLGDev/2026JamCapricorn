@@ -60,6 +60,8 @@ public class DragAndDrop : MonoBehaviour,
     /// </summary>
     private bool _isDragging;
 
+    public bool IsDragging => _isDragging;
+
     /// <summary>
     /// ドラッグを開始したポインターのID。
     /// </summary>

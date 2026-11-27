@@ -363,6 +363,7 @@ GameObject:
   - component: {fileID: 922103204}
   - component: {fileID: 922103203}
   - component: {fileID: 922103202}
+  - component: {fileID: 922103207}
   m_Layer: 0
   m_Name: DropZone
   m_TagString: Untagged
@@ -432,7 +433,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f2f8a67de84783d46b93d26b1a375955, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -479,6 +480,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &922103207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922103201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0743ee34f32fbba48bbefc67307b1ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DropZoneHighlight
+  _targetRenderer: {fileID: 922103204}
+  _highlightEmission: {r: 2, g: 1.8673319, b: 0.50943375, a: 1}
+  _blink: 1
+  _blinkPeriod: 1
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +849,66 @@ PrefabInstance:
       propertyPath: _ingredientData
       value: 
       objectReference: {fileID: 11400000, guid: 6bcb34b05bb33594e9dd916884508163, type: 2}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 922103207}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 922103207}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StopHighlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StartHighlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: DropZoneHighlight, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: DropZoneHighlight, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 1921129938}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+      propertyPath: _onDragStarted.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: DragAndDrop, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3840888294027742619, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
       propertyPath: m_Name
       value: ItemPrefab
@@ -930,6 +1007,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6651842605740949086, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
   m_PrefabInstance: {fileID: 1921129935}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1921129938 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1736052128092894535, guid: 7aa7391a7223d704baec2deff650aea9, type: 3}
+  m_PrefabInstance: {fileID: 1921129935}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e95ad2b5e43358046a37502b654fcdbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DragAndDrop
 --- !u!1 &2086913008
 GameObject:
   m_ObjectHideFlags: 0
