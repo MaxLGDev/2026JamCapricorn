@@ -12,6 +12,8 @@ public class ScoreSystem : MonoBehaviour
     [SerializeField, Min(0)] private int multiplierIncrease = 10;
 
     private float totalScore;
+    public float TotalScore => totalScore;
+    
     private int currentRound = 1;
 
     private void OnEnable()
@@ -34,10 +36,19 @@ public class ScoreSystem : MonoBehaviour
     private void UpdateCurrentRound(int round, RecipeData recipe)
     {
         currentRound = round;
+
+        if (round == 1)
+        {
+            totalScore = 0;
+            UpdateScoreText();
+        }
     }
 
     private void AddRemainingTimeScore(bool won)
     {
+        if (!won)
+            return;
+        
         if (remainingTimeText == null)
         {
             return;
