@@ -39,6 +39,7 @@ public class ScoreSystem : MonoBehaviour
         }
 
         totalScore += remainingTime * scoreMultiplier;
+        HighScoreSave.SaveHighScore(totalScore);
         UpdateScoreText();
     }
 
