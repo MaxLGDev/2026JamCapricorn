@@ -13,7 +13,7 @@ public class IngredientSpawner : MonoBehaviour
     [SerializeField] private int maxTotalIngredients = 18;
     [SerializeField] private int maxTotalBonusIngredients = 3;
     
-    [SerializeField] private BoxCollider2D spawnArea;
+    [SerializeField] private RectTransform spawnArea;
     
     private List<Ingredient> spawnedIngredients = new List<Ingredient>();
 
@@ -62,13 +62,14 @@ public class IngredientSpawner : MonoBehaviour
             .ToList();
         toSpawn.AddRange(decoys);
         
+        Rect r = spawnArea.rect;
+        
         foreach(IngredientData data in toSpawn)
         {
-            float x = Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x);
-            float y = Random.Range(spawnArea.bounds.min.y, spawnArea.bounds.max.y);
-            Vector2 spawnedPosition = new Vector2(x, y);
+            Vector2 spawnPosition = new Vector2(Random.Range(r.xMin, r.xMax), Random.Range(r.yMin, r.yMax));
             
-            Ingredient spawned = Instantiate(ingredientPrefab, spawnedPosition, Quaternion.identity);
+            Ingredient spawned = Instantiate(ingredientPrefab, spawnArea);
+            ((RectTransform)spawned.transform).anchoredPosition = spawnPosition;
 
             spawned.IsRequired = required.Contains(data);
             spawnedIngredients.Add(spawned);
@@ -87,14 +88,5 @@ public class IngredientSpawner : MonoBehaviour
         }
         spawnedIngredients.Clear();
         Debug.Log("[Spawner] Clear");
-    }
-    
-    private void OnDrawGizmos()
-    {
-        if (spawnArea == null)
-            return;
-        
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(spawnArea.bounds.center, spawnArea.bounds.size);
     }
 }

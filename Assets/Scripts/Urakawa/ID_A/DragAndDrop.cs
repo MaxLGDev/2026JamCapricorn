@@ -79,12 +79,6 @@ public class DragAndDrop : MonoBehaviour,
     {
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
-
-        if (_ingredientData == null)
-        {
-            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataが設定されていません。", this);
-            return;
-        }
     }
 
     /// <summary>
@@ -240,5 +234,10 @@ public class DragAndDrop : MonoBehaviour,
         _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
 
         Debug.Log($"[DragAndDrop] {IngredientDisplayName}: 無効化されたためドラッグを中断。",this);
+    }
+
+    public void SetData(IngredientData data)
+    {
+        _ingredientData = data;
     }
 }
