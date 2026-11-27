@@ -31,7 +31,7 @@ public class DropZone : MonoBehaviour, IDropHandler
         }
     }
     
-    public static event Action<bool> OnDropJudged;
+    public static event Action<bool, bool> OnDropJudged;
 
     /// <summary>
     /// 食材を判定し、ドラッグの終了処理を完了してから結果を通知する。
@@ -49,10 +49,11 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        if (!droppedItem.CompareTag("Ingredient"))
+        bool isRecipeBase = droppedItem.CompareTag("RecipeBase");
+        if (!isRecipeBase && !droppedItem.CompareTag("Ingredient") && !droppedItem.CompareTag("Tool"))
         {
             Debug.LogWarning(
-                $"[DropZone] {name}: ドロップされたアイテムは食材ではありません。",
+                $"[DropZone] {name}: ドロップされたアイテムは食材または道具ではありません。",
                 this);
             return;
         }
@@ -65,15 +66,35 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        if (dragAndDrop.IngredientData == null)
+        if (dragAndDrop.IngredientData == null && dragAndDrop.ToolData == null)
         {
             Debug.LogWarning(
-                $"[DropZone] {name}: {droppedItem.name}のIngredientDataがありません。",
+                $"[DropZone] {name}: {droppedItem.name}の材料または道具データがありません。",
                 this);
             return;
         }
 
-        bool isCorrect = IsCorrectIngredient(droppedItem);
+        bool isIngredient = dragAndDrop.IngredientData != null;
+
+        if (isRecipeBase)
+        {
+            bool isCorrectRecipeBase = isIngredient &&
+                dragAndDrop.IngredientData == _roundManager.CurrentRecipe.RecipeBase;
+
+            if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrectRecipeBase))
+            {
+                return;
+            }
+
+            _roundManager.SetRecipeBaseResult(isCorrectRecipeBase);
+            Debug.Log($"[DropZone] {name}: Recipe Base result - {isCorrectRecipeBase}", this);
+            Destroy(droppedItem);
+            return;
+        }
+
+        bool isCorrect = isIngredient
+            ? IsCorrectIngredient(droppedItem)
+            : IsCorrectTool(dragAndDrop.ToolData);
 
         // 正解なら現在位置に残し、不正解なら開始位置へ戻す。
         if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrect))
@@ -81,35 +102,53 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        // 位置と入力設定の復元後に通知する
-        NotifyResult(isCorrect);
+        NotifyResult(isCorrect, !isIngredient);
 
-        if (isCorrect)
+        if (isCorrect && isIngredient)
         {
             _roundManager.AddIngredient();
-            Destroy(droppedItem);
         }
+        else if (!isCorrect && isIngredient)
+        {
+            _roundManager.DecreaseTime(1f);
+        }
+
+        Destroy(droppedItem);
     }
 
     /// <summary>
     /// ドロップされた食材が正解か判定する。
     /// </summary>
-    /// <param name="ingredientData">ドロップされた食材。</param>
+    /// <param name="droppedItem">ドロップされた食材。</param>
     /// <returns>正解ならtrue、不正解ならfalse。</returns>
     private bool IsCorrectIngredient(GameObject droppedItem)
     {
         return droppedItem.TryGetComponent<Ingredient>(out var ingredient) && ingredient.IsRequired;
     }
 
+    private bool IsCorrectTool(ToolData toolData)
+    {
+        ToolData[] requiredTools = _roundManager.CurrentRecipe.RequiredTool;
+        if (requiredTools == null)
+            return false;
+
+        foreach (ToolData requiredTool in requiredTools)
+        {
+            if (requiredTool == toolData)
+                return true;
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// 判定結果をログに記録し、イベントで通知する。
     /// </summary>
     /// <param name="isCorrect">正解かどうか。</param>
-    private void NotifyResult(bool isCorrect)
+    private void NotifyResult(bool isCorrect, bool isTool)
     {
         Debug.Log($"[DropZone] {name}: 判定結果 - {isCorrect}", this);
 
-        // 判定結果を渡す。
-        OnDropJudged?.Invoke(isCorrect);
+        OnDropJudged?.Invoke(isCorrect, isTool);
     }
 }
