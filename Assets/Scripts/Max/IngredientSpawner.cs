@@ -9,8 +9,6 @@ public class IngredientSpawner : MonoBehaviour
     [SerializeField] private List<IngredientData> ingredients = new List<IngredientData>();
     [SerializeField] private Ingredient ingredientPrefab;
 
-    [SerializeField] private RecipeData recipe;
-
     [SerializeField] private int itemsAddedPerRound = 1;
     [SerializeField] private int maxTotalIngredients = 18;
     [SerializeField] private int maxTotalBonusIngredients = 3;
@@ -21,17 +19,17 @@ public class IngredientSpawner : MonoBehaviour
 
     private void OnEnable()
     {
-        RoundManager.OnRoundStart += Spawn;
-        RoundManager.OnRoundEnd += Clear;
+        RoundManager.RoundStarted += Spawn;
+        RoundManager.RoundEnded += Clear;
     }
 
     private void OnDisable()
     {
-        RoundManager.OnRoundStart -= Spawn;
-        RoundManager.OnRoundEnd -= Clear;
+        RoundManager.RoundStarted -= Spawn;
+        RoundManager.RoundEnded -= Clear;
     }
 
-    private void Spawn(int round)
+    private void Spawn(int round, RecipeData recipe)
     {
         Clear(true);
         
