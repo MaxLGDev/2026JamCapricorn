@@ -9,16 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 651f05e10febd7e4ba94594bddc1433c, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
   m_Name: CakeRecipeData
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  recipeName: "\u30B1\u30FC\u30AD"
-  recipeImage: {fileID: 0}
-  mainIngredient: {fileID: 11400000, guid: ab4b224d38ac6674c9938271dba09fae, type: 2}
-  ingredients:
-  - {fileID: 11400000, guid: b70e739dcfc7c544ca6615ed4dca6951, type: 2}
-  - {fileID: 11400000, guid: 5837d46642b5e4746916a6b1925f4f28, type: 2}
-  - {fileID: 11400000, guid: 6e8648b8bc8397f40958badc91b693cd, type: 2}
-  requiredTools:
-  - {fileID: 11400000, guid: 2b7e6b658959e4d43ac62330380d77d2, type: 2}
-  - {fileID: 11400000, guid: b397bb867e9fe47458942e253e0da7fb, type: 2}
+  RecipeName: IchigoCake
+  RecipeImage: {fileID: 21300000, guid: f80fec198ad039245821b14cdad52a00, type: 3}
+  RecipeBase: {fileID: 11400000, guid: a7cae914829bd4c47889629473446a8d, type: 2}
+  Ingredients:
+  - {fileID: 11400000, guid: abc6f5663b837af48aa4d15b5802cdfc, type: 2}
+  - {fileID: 11400000, guid: 6cf93308d7fcf294e877ac6e3484179b, type: 2}
+  - {fileID: 11400000, guid: 79278cebd1cc852448dd73c3eb3ae51f, type: 2}
+  RequiredTool:
+  - {fileID: 11400000, guid: 68c63a98ec26a7a48a92680eaa18d961, type: 2}

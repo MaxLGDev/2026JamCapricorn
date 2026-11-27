@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Ingredient : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Ingredient : MonoBehaviour
     public void Init(IngredientData newData)
     {
         data = newData;
-        GetComponent<SpriteRenderer>().sprite = newData.IngredientSprite;
+        GetComponentInChildren<Image>().sprite = newData.IngredientSprite;
+        
+        GetComponent<DragAndDrop>().SetData(newData);
     }
 }

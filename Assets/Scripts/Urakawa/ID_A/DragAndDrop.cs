@@ -60,6 +60,8 @@ public class DragAndDrop : MonoBehaviour,
     /// </summary>
     private bool _isDragging;
 
+    public bool IsDragging => _isDragging;
+
     /// <summary>
     /// ドラッグを開始したポインターのID。
     /// </summary>
@@ -238,5 +240,10 @@ public class DragAndDrop : MonoBehaviour,
         _canvasGroup.blocksRaycasts = _originalBlocksRaycasts;
 
         Debug.Log($"[DragAndDrop] {IngredientDisplayName}: 無効化されたためドラッグを中断。",this);
+    }
+
+    public void SetData(IngredientData data)
+    {
+        _ingredientData = data;
     }
 }
