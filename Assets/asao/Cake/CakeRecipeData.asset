@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
   m_Name: CakeRecipeData
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  RecipeName: Cake
-  RecipeImage: {fileID: 0}
-  RecipeBase: {fileID: 11400000, guid: ab4b224d38ac6674c9938271dba09fae, type: 2}
+  RecipeName: IchigoCake
+  RecipeImage: {fileID: 21300000, guid: f80fec198ad039245821b14cdad52a00, type: 3}
+  RecipeBase: {fileID: 11400000, guid: a7cae914829bd4c47889629473446a8d, type: 2}
   Ingredients:
-  - {fileID: 11400000, guid: b70e739dcfc7c544ca6615ed4dca6951, type: 2}
-  - {fileID: 11400000, guid: 739d42a9f16d6d6438bfb14e6c971e68, type: 2}
+  - {fileID: 11400000, guid: abc6f5663b837af48aa4d15b5802cdfc, type: 2}
+  - {fileID: 11400000, guid: 6cf93308d7fcf294e877ac6e3484179b, type: 2}
+  - {fileID: 11400000, guid: 79278cebd1cc852448dd73c3eb3ae51f, type: 2}
   RequiredTool:
-  - {fileID: 11400000, guid: 30a145df9d162d641b51f36abd20999d, type: 2}
-  - {fileID: 11400000, guid: b397bb867e9fe47458942e253e0da7fb, type: 2}
+  - {fileID: 11400000, guid: 68c63a98ec26a7a48a92680eaa18d961, type: 2}

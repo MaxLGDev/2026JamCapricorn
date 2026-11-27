@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de41940889970d45b2439a70f068be9, type: 3}
   m_Name: Apple
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
-  IngredientName: 
-  IngredientSprite: {fileID: 0}
+  IngredientName: Apple
+  IngredientSprite: {fileID: 21300000, guid: c02583b46d48b0d4c9f5bd945f6a9398, type: 3}
   IsBonus: 0

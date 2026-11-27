@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using System.Globalization;
 using UnityEngine.UI;
 
 public class ResultSystem : MonoBehaviour
@@ -8,33 +7,40 @@ public class ResultSystem : MonoBehaviour
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text resultText;
     [SerializeField] private Image resultImage;
-    [SerializeField] private Sprite gameOverSprite;
-    [SerializeField] private Sprite gameClearSprite;
-    [SerializeField] private int ClearLine;
 
-    private void Start()
+    [SerializeField] private ScoreSystem scoreSystem;
+    [SerializeField] private GameObject resultPanel;
+    [SerializeField] private GameObject clearText;
+    
+
+    private void OnEnable()
     {
-        if (resultImage != null)
-        {
-            resultImage.gameObject.SetActive(false);
-        }
+        RoundManager.RoundStarted += OnRoundStarted;
+        RoundManager.RoundEnded += OnRoundEnded;
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        if (scoreText == null || resultImage == null ||
-            !int.TryParse(scoreText.text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int score))
+        RoundManager.RoundStarted -= OnRoundStarted;
+        RoundManager.RoundEnded -= OnRoundEnded;
+    }
+
+    private void OnRoundStarted(int round, RecipeData recipe)
+    {
+        resultPanel.SetActive(false);
+        clearText.SetActive(false);
+    }
+    
+    private void OnRoundEnded(bool won)
+    {
+        if (won)
         {
+            clearText.SetActive(true);
             return;
         }
 
-        resultImage.sprite = score <= ClearLine ? gameOverSprite : gameClearSprite;
-        resultImage.gameObject.SetActive(true);
-
-        if (resultText != null)
-        {
-            resultText.text = score <= ClearLine ? "Game Over" : "Game Clear";
-        }
-
+        float score = scoreSystem.TotalScore;
+        scoreText.text = "Score: " + score.ToString("0");
+        resultPanel.SetActive(true);
     }
 }
