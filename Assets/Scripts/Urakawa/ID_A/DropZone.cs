@@ -10,6 +10,13 @@ public class DropZone : MonoBehaviour, IDropHandler
     [Header("ラウンド管理")] 
     [SerializeField] private RoundManager _roundManager;
 
+    [Header("時間ボーナス・ペナルティ（秒）")]
+    [SerializeField] private float _bonusTime = 3f;
+    [SerializeField] private float _wrongPenalty = 1f;
+
+    /// <summary>ボーナス食材がドロップされた時（追加秒数）。</summary>
+    public static event Action<float> OnBonusCollected;
+
     /// <summary>
     /// 3Dのドロップ判定に必要なColliderを確認する。
     /// </summary>
@@ -96,21 +103,29 @@ public class DropZone : MonoBehaviour, IDropHandler
             ? IsCorrectIngredient(droppedItem)
             : IsCorrectTool(dragAndDrop.ToolData);
 
+        // レシピに不要なボーナス食材なら時間を追加する
+        bool isBonus = isIngredient && !isCorrect && IsBonusIngredient(droppedItem);
+
         // 正解なら現在位置に残し、不正解なら開始位置へ戻す。
         if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrect))
         {
             return;
         }
 
-        NotifyResult(isCorrect, !isIngredient);
+        NotifyResult(isCorrect || isBonus, !isIngredient);
 
         if (isCorrect && isIngredient)
         {
             _roundManager.AddIngredient();
         }
+        else if (isBonus)
+        {
+            _roundManager.DecreaseTime(-_bonusTime); // マイナス = 時間を追加
+            OnBonusCollected?.Invoke(_bonusTime);
+        }
         else if (!isCorrect && isIngredient)
         {
-            _roundManager.DecreaseTime(1f);
+            _roundManager.DecreaseTime(_wrongPenalty);
         }
 
         Destroy(droppedItem);
@@ -124,6 +139,13 @@ public class DropZone : MonoBehaviour, IDropHandler
     private bool IsCorrectIngredient(GameObject droppedItem)
     {
         return droppedItem.TryGetComponent<Ingredient>(out var ingredient) && ingredient.IsRequired;
+    }
+
+    private bool IsBonusIngredient(GameObject droppedItem)
+    {
+        return droppedItem.TryGetComponent<Ingredient>(out var ingredient)
+            && ingredient.Data != null
+            && ingredient.Data.IsBonus;
     }
 
     private bool IsCorrectTool(ToolData toolData)

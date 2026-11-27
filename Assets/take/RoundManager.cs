@@ -27,6 +27,9 @@ public class RoundManager : MonoBehaviour
     [Header("Recipes（材料が少ない順）")]
     [SerializeField] private RecipeData[] recipes;
 
+    [Header("Recipe Base（ベース材料のドロップを必須にするか）")]
+    [SerializeField] private bool requireRecipeBase = false;
+
     [Header("Timer UI")]
     [SerializeField] private TMP_Text timerText;
 
@@ -75,7 +78,8 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.Playing;
         RemainingTime = roundTime;
         availableIngredients = 0;
-        recipeBaseSelected = CurrentRecipe.RecipeBase == null;
+        // ベース材料はまだスポーンしないので、デフォルトでは判定しない
+        recipeBaseSelected = !requireRecipeBase || CurrentRecipe.RecipeBase == null;
         recipeBaseCorrect = recipeBaseSelected;
         UpdateTimer();
 

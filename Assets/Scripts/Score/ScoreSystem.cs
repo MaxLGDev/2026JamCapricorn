@@ -7,6 +7,7 @@ public class ScoreSystem : MonoBehaviour
 {
     [SerializeField] private TMP_Text remainingTimeText;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private string scorePrefix = ""; // 画像に「SCORE」がある場合は空のまま
     [SerializeField, Min(1)] private int baseScoreMultiplier = 10;
     [SerializeField, Min(1)] private int roundsPerMultiplierIncrease = 3;
     [SerializeField, Min(0)] private int multiplierIncrease = 10;
@@ -86,7 +87,7 @@ public class ScoreSystem : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + totalScore.ToString("0.##", CultureInfo.InvariantCulture);
+            scoreText.text = scorePrefix + totalScore.ToString("0", CultureInfo.InvariantCulture);
         }
     }
 }
