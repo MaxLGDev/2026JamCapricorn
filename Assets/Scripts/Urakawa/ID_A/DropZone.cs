@@ -49,7 +49,8 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        if (!droppedItem.CompareTag("Ingredient") && !droppedItem.CompareTag("Tool"))
+        bool isRecipeBase = droppedItem.CompareTag("RecipeBase");
+        if (!isRecipeBase && !droppedItem.CompareTag("Ingredient") && !droppedItem.CompareTag("Tool"))
         {
             Debug.LogWarning(
                 $"[DropZone] {name}: ドロップされたアイテムは食材または道具ではありません。",
@@ -74,6 +75,23 @@ public class DropZone : MonoBehaviour, IDropHandler
         }
 
         bool isIngredient = dragAndDrop.IngredientData != null;
+
+        if (isRecipeBase)
+        {
+            bool isCorrectRecipeBase = isIngredient &&
+                dragAndDrop.IngredientData == _roundManager.CurrentRecipe.RecipeBase;
+
+            if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrectRecipeBase))
+            {
+                return;
+            }
+
+            _roundManager.SetRecipeBaseResult(isCorrectRecipeBase);
+            Debug.Log($"[DropZone] {name}: Recipe Base result - {isCorrectRecipeBase}", this);
+            Destroy(droppedItem);
+            return;
+        }
+
         bool isCorrect = isIngredient
             ? IsCorrectIngredient(droppedItem)
             : IsCorrectTool(dragAndDrop.ToolData);

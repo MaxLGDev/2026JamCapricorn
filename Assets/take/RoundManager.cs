@@ -33,6 +33,8 @@ public class RoundManager : MonoBehaviour
     private RoundState currentState = RoundState.Ready;
     private Coroutine roundTimer;
     private int availableIngredients;
+    private bool recipeBaseSelected;
+    private bool recipeBaseCorrect;
 
     public int CurrentRound => round;
     public RoundState CurrentState => currentState;
@@ -73,6 +75,8 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.Playing;
         RemainingTime = roundTime;
         availableIngredients = 0;
+        recipeBaseSelected = CurrentRecipe.RecipeBase == null;
+        recipeBaseCorrect = recipeBaseSelected;
         UpdateTimer();
 
         Debug.Log($"[Round] Start {round} ({CurrentRecipe.RecipeName}), required: {RequiredNumber}");
@@ -129,10 +133,26 @@ public class RoundManager : MonoBehaviour
             RoundSuccess();
     }
 
+    public void SetRecipeBaseResult(bool isCorrect)
+    {
+        if (currentState != RoundState.Playing)
+            return;
+
+        recipeBaseSelected = true;
+        recipeBaseCorrect = isCorrect;
+        Debug.Log($"[Round] Recipe Base result: {isCorrect}");
+    }
+
     public void RoundSuccess()
     {
         if (currentState != RoundState.Playing)
             return;
+
+        if (!recipeBaseSelected || !recipeBaseCorrect)
+        {
+            RoundFail();
+            return;
+        }
 
         StopRoundTimer();
         currentState = RoundState.Success;

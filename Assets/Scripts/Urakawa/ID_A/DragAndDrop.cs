@@ -85,12 +85,6 @@ public class DragAndDrop : MonoBehaviour,
     {
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
-
-        if (_ingredientData == null && _toolData == null)
-        {
-            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataまたはToolDataが設定されていません。", this);
-            return;
-        }
     }
 
     /// <summary>
