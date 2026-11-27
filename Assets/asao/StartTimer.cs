@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
 {
-    [SerializeField] public TextMeshProUGUI timerText;
+    [SerializeField] public TMP_Text timerText;
     [SerializeField] public TextMeshProUGUI recipeText;        // 料理名
     [SerializeField] public TextMeshProUGUI ingredientsText;   // 必要食材を出すテキスト
     [SerializeField] public TextMeshProUGUI toolsText;         // ← 追加: 必要な道具を出すテキスト
