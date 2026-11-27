@@ -1,9 +1,15 @@
 
 using UnityEngine;
+using System.Collections;
 
 public class EventManager : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 2f;
+    [Header("Movement Event Settings")]
+    [SerializeField, Range(0f, 100f)]
+    private float eventProbability = 30f;
+
+    [SerializeField]
+    private float moveSpeed = 100f;
 
     private void OnEnable()
     {
@@ -18,30 +24,53 @@ public class EventManager : MonoBehaviour
     // ラウンド開始イベント
     private void OnRoundStarted(int round, RecipeData recipe)
     {
-        Debug.Log("[EventManager] Event Started!");
+        Debug.Log("[EventManager] Round Started!");
 
-        StartIngredientMovement();
+        // 発生確率を判定
+        if (Random.Range(0f, 100f) < eventProbability)
+        {
+            Debug.Log("[EventManager] Movement Event Triggered!");
+
+            StartCoroutine(StartIngredientMovement());
+        }
+        else
+        {
+            Debug.Log("[EventManager] Movement Event Not Triggered!");
+        }
     }
 
-    // 食材の移動開始イベント
-    private void StartIngredientMovement()
+    // 食材の移動開始
+    private IEnumerator StartIngredientMovement()
     {
-        Ingredient[] ingredients = FindObjectsByType<Ingredient>(
-            FindObjectsSortMode.None
-        );
+        // 食材の生成完了を待つ
+        yield return null;
 
-        foreach (Ingredient ingredient in ingredients)
+        DragAndDrop[] objects =
+            FindObjectsByType<DragAndDrop>(FindObjectsSortMode.None);
+
+        foreach (DragAndDrop obj in objects)
         {
-            Rigidbody2D rb = ingredient.GetComponent<Rigidbody2D>();
+            RectTransform rect = obj.GetComponent<RectTransform>();
 
-            if (rb == null)
+            if (rect == null)
                 continue;
 
-            Vector2 direction = Random.insideUnitCircle.normalized;
-
-            rb.linearVelocity = direction * moveSpeed;
+            StartCoroutine(MoveIngredient(rect));
         }
+    }
 
-        Debug.Log("[EventManager] Ingredient Movement Started!");
+    // 食材の移動
+    private IEnumerator MoveIngredient(RectTransform rect)
+    {
+        Vector2 direction =
+            Random.insideUnitCircle.normalized;
+
+        while (rect != null)
+        {
+            rect.anchoredPosition +=
+                direction * moveSpeed * Time.deltaTime;
+
+            yield return null;
+        }
     }
 }
