@@ -291,6 +291,8 @@ MonoBehaviour:
   baseScoreMultiplier: 10
   roundsPerMultiplierIncrease: 3
   multiplierIncrease: 10
+  correctIngredientScore: 10
+  incorrectIngredientPenalty: 10
 --- !u!4 &552755163
 Transform:
   m_ObjectHideFlags: 0
@@ -337,7 +339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &943797783
 RectTransform:
   m_ObjectHideFlags: 0

@@ -101,6 +101,20 @@ public class RoundManager : MonoBehaviour
         TimeChanged?.Invoke(RemainingTime);
     }
 
+    public void DecreaseTime(float seconds)
+    {
+        if (currentState != RoundState.Playing)
+            return;
+
+        RemainingTime = Mathf.Max(0f, RemainingTime - seconds);
+        UpdateTimer();
+
+        Debug.Log($"[Round] Time decreased by {seconds} seconds. Remaining: {RemainingTime:F1}");
+
+        if (RemainingTime <= 0f)
+            RoundFail();
+    }
+
     // 正解の食材がドロップされた時に呼ぶ
     public void AddIngredient()
     {

@@ -13,16 +13,22 @@ public class DragAndDrop : MonoBehaviour,
     [Header("食材データ")]
     [SerializeField] private IngredientData _ingredientData;
 
+    [Header("道具データ")]
+    [SerializeField] private ToolData _toolData;
+
     /// <summary>
     /// ログ用の食材名。データ未設定時はオブジェクト名を使用する。
     /// </summary>
     private string IngredientDisplayName =>
-        _ingredientData != null ? _ingredientData.IngredientName : name;
+        _ingredientData != null ? _ingredientData.IngredientName :
+        _toolData != null ? _toolData.ToolName : name;
 
     /// <summary>
     /// DropZoneから食材データを参照するためのプロパティ。
     /// </summary>
     public IngredientData IngredientData => _ingredientData;
+
+    public ToolData ToolData => _toolData;
 
     [Header("ドラッグイベント")]
     [SerializeField]
@@ -239,5 +245,12 @@ public class DragAndDrop : MonoBehaviour,
     public void SetData(IngredientData data)
     {
         _ingredientData = data;
+        _toolData = null;
+    }
+
+    public void SetData(ToolData data)
+    {
+        _toolData = data;
+        _ingredientData = null;
     }
 }

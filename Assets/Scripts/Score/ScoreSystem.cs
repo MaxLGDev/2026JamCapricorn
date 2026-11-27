@@ -10,6 +10,8 @@ public class ScoreSystem : MonoBehaviour
     [SerializeField, Min(1)] private int baseScoreMultiplier = 10;
     [SerializeField, Min(1)] private int roundsPerMultiplierIncrease = 3;
     [SerializeField, Min(0)] private int multiplierIncrease = 10;
+    [SerializeField, Min(0)] private float correctToolScore = 10f;
+    [SerializeField, Min(0)] private float incorrectToolPenalty = 10f;
 
     private float totalScore;
     public float TotalScore => totalScore;
@@ -20,16 +22,28 @@ public class ScoreSystem : MonoBehaviour
     {
         RoundManager.RoundStarted += UpdateCurrentRound;
         RoundManager.RoundEnded += AddRemainingTimeScore;
+        DropZone.OnDropJudged += UpdateToolScore;
     }
 
     private void OnDisable()
     {
         RoundManager.RoundStarted -= UpdateCurrentRound;
         RoundManager.RoundEnded -= AddRemainingTimeScore;
+        DropZone.OnDropJudged -= UpdateToolScore;
     }
 
     private void Start()
     {
+        UpdateScoreText();
+    }
+
+    private void UpdateToolScore(bool isCorrect, bool isTool)
+    {
+        if (!isTool)
+            return;
+
+        totalScore += isCorrect ? correctToolScore : -incorrectToolPenalty;
+        HighScoreSave.SaveHighScore(totalScore);
         UpdateScoreText();
     }
 
