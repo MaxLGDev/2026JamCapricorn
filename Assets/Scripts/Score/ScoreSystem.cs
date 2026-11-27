@@ -12,12 +12,12 @@ public class ScoreSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        RoundManager.OnRoundEnd += AddRemainingTimeScore;
+        RoundManager.RoundEnded += AddRemainingTimeScore;
     }
 
     private void OnDisable()
     {
-        RoundManager.OnRoundEnd -= AddRemainingTimeScore;
+        RoundManager.RoundEnded -= AddRemainingTimeScore;
     }
 
     private void Start()
