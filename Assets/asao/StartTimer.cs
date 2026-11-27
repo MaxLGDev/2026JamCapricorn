@@ -81,7 +81,7 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
         foreach (var tool in CurrentRecipe.RequiredTool)   // ← Tools ではなく RequiredTool
         {
             if (tool == null) continue;
-            text += "・" + tool.toolName + "\n";
+            text += "・" + tool.ToolName + "\n";
         }
         toolsText.text = text;
     }
