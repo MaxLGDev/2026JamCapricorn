@@ -7,7 +7,9 @@ public class CursorManager : MonoBehaviour
 {
     [SerializeField] private Texture2D openHand;
     [SerializeField] private Texture2D closedHand;
-    [SerializeField] private Vector2 hotspot = new Vector2(16f, 16f); // クリック位置（画像の左上からのピクセル）
+    [SerializeField] private bool centerHotspot = true;                // ON = 画像の中心でクリック
+    [SerializeField] private Vector2 hotspot = new Vector2(16f, 16f); // OFFの時のクリック位置（左上からのピクセル）
+    [SerializeField] private CursorMode cursorMode = CursorMode.ForceSoftware; // Software = 画像サイズのまま表示（大きくできる）
 
     private bool isClosed;
 
@@ -30,8 +32,11 @@ public class CursorManager : MonoBehaviour
     {
         isClosed = closed;
         Texture2D texture = closed ? closedHand : openHand;
-        if (texture != null)
-            Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
+        if (texture == null)
+            return;
+
+        Vector2 spot = centerHotspot ? new Vector2(texture.width * 0.5f, texture.height * 0.5f) : hotspot;
+        Cursor.SetCursor(texture, spot, cursorMode);
     }
 
     private void OnDisable()

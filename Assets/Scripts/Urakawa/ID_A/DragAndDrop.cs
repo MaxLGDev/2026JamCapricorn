@@ -10,6 +10,9 @@ using UnityEngine.EventSystems;
 public class DragAndDrop : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    /// <summary>ドラッグ開始時（効果音用）。</summary>
+    public static event System.Action DragStarted;
+
     [Header("食材データ")]
     [SerializeField] private IngredientData _ingredientData;
 
@@ -130,6 +133,7 @@ public class DragAndDrop : MonoBehaviour,
         _offset = _rectTransform.position - pointerPosition; // クリックした位置との差を保持する。
         _pointerId = eventData.pointerId;
         _isDragging = true;
+        DragStarted?.Invoke(); // 効果音など
 
         // 背後のDropZoneが入力を受け取れるよう、一時的に無効化する。
         _originalBlocksRaycasts = _canvasGroup.blocksRaycasts;

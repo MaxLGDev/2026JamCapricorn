@@ -13,9 +13,13 @@ public class DropZone : MonoBehaviour, IDropHandler
     [Header("時間ボーナス・ペナルティ（秒）")]
     [SerializeField] private float _bonusTime = 3f;
     [SerializeField] private float _wrongPenalty = 1f;
+    [SerializeField] private float _penaltyItemTime = 3f;
 
     /// <summary>ボーナス食材がドロップされた時（追加秒数）。</summary>
     public static event Action<float> OnBonusCollected;
+
+    /// <summary>生地がドロップされた時（正解かどうか）。</summary>
+    public static event Action<bool> OnRecipeBaseDropped;
 
     /// <summary>
     /// 3Dのドロップ判定に必要なColliderを確認する。
@@ -40,6 +44,9 @@ public class DropZone : MonoBehaviour, IDropHandler
     
     public static event Action<bool, bool> OnDropJudged;
 
+    /// <summary>クリック選択（生地・道具）からも同じ判定イベントを出す。</summary>
+    public static void Judge(bool isCorrect, bool isTool) => OnDropJudged?.Invoke(isCorrect, isTool);
+
     /// <summary>
     /// 食材を判定し、ドラッグの終了処理を完了してから結果を通知する。
     /// </summary>
@@ -56,14 +63,11 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        bool isRecipeBase = droppedItem.CompareTag("RecipeBase");
-        if (!isRecipeBase && !droppedItem.CompareTag("Ingredient") && !droppedItem.CompareTag("Tool"))
-        {
-            Debug.LogWarning(
-                $"[DropZone] {name}: ドロップされたアイテムは食材または道具ではありません。",
-                this);
-            return;
-        }
+        // タグは使わない：DragAndDropがあれば食材か道具として扱う
+        // 生地 = Ingredient コンポーネントのないアイテム（スポーンされない、パネルに置いてあるもの）
+        bool isRecipeBase = droppedItem.GetComponent<Ingredient>() == null
+            && droppedItem.TryGetComponent<DragAndDrop>(out var baseDrag)
+            && baseDrag.IngredientData != null;
 
         if (!droppedItem.TryGetComponent<DragAndDrop>(out var dragAndDrop))
         {
@@ -88,14 +92,19 @@ public class DropZone : MonoBehaviour, IDropHandler
             bool isCorrectRecipeBase = isIngredient &&
                 dragAndDrop.IngredientData == _roundManager.CurrentRecipe.RecipeBase;
 
-            if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrectRecipeBase))
+            // 生地は次のラウンドでも使うので、元の位置に戻す（消さない）
+            if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, false))
             {
                 return;
             }
 
             _roundManager.SetRecipeBaseResult(isCorrectRecipeBase);
+            if (!isCorrectRecipeBase)
+                _roundManager.DecreaseTime(_wrongPenalty);
+
+            NotifyResult(isCorrectRecipeBase, false);
+            OnRecipeBaseDropped?.Invoke(isCorrectRecipeBase);
             Debug.Log($"[DropZone] {name}: Recipe Base result - {isCorrectRecipeBase}", this);
-            Destroy(droppedItem);
             return;
         }
 
@@ -125,7 +134,7 @@ public class DropZone : MonoBehaviour, IDropHandler
         }
         else if (!isCorrect && isIngredient)
         {
-            _roundManager.DecreaseTime(_wrongPenalty);
+            _roundManager.DecreaseTime(IsPenaltyIngredient(droppedItem) ? _penaltyItemTime : _wrongPenalty);
         }
 
         Destroy(droppedItem);
@@ -146,6 +155,13 @@ public class DropZone : MonoBehaviour, IDropHandler
         return droppedItem.TryGetComponent<Ingredient>(out var ingredient)
             && ingredient.Data != null
             && ingredient.Data.IsBonus;
+    }
+
+    private bool IsPenaltyIngredient(GameObject droppedItem)
+    {
+        return droppedItem.TryGetComponent<Ingredient>(out var ingredient)
+            && ingredient.Data != null
+            && ingredient.Data.IsPenalty;
     }
 
     private bool IsCorrectTool(ToolData toolData)

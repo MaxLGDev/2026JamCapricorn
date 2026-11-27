@@ -8,8 +8,28 @@ public class RecipeHUD : MonoBehaviour
     [SerializeField] private TMP_Text roundText;        // ラウンド番号（画像の上に置く）
     [SerializeField] private TMP_Text recipeNameText;   // 任意
     [SerializeField] private Image recipeImage;         // 任意
+    [SerializeField] private Image baseSlot;            // 必要な生地のアイコン（任意）
     [SerializeField] private Image[] ingredientSlots;   // 必要な材料のアイコン
     [SerializeField] private Image[] toolSlots;         // 必要な道具のアイコン
+
+    // Base Slot が空なら、材料スロット1つ目をコピーして左側に自動で作る
+    private void Awake()
+    {
+        if (baseSlot != null || ingredientSlots == null || ingredientSlots.Length == 0 || ingredientSlots[0] == null)
+            return;
+
+        Image first = ingredientSlots[0];
+        baseSlot = Instantiate(first, first.transform.parent);
+        baseSlot.name = "BaseSlot (auto)";
+        baseSlot.transform.SetSiblingIndex(first.transform.GetSiblingIndex());
+
+        RectTransform a = first.rectTransform;
+        RectTransform b = baseSlot.rectTransform;
+        Vector2 step = new Vector2(a.rect.width + 10f, 0f);
+        if (ingredientSlots.Length > 1 && ingredientSlots[1] != null)
+            step = ingredientSlots[1].rectTransform.anchoredPosition - a.anchoredPosition;
+        b.anchoredPosition = a.anchoredPosition - step;
+    }
 
     private void OnEnable()  => RoundManager.RoundStarted += Show;
     private void OnDisable() => RoundManager.RoundStarted -= Show;
@@ -20,8 +40,29 @@ public class RecipeHUD : MonoBehaviour
         if (recipeNameText != null) recipeNameText.text = recipe.RecipeName;
         if (recipeImage != null && recipe.RecipeImage != null) recipeImage.sprite = recipe.RecipeImage;
 
+        if (baseSlot != null)
+        {
+            Sprite baseSprite = FindKijiSprite(recipe.RecipeBase);
+            baseSlot.gameObject.SetActive(baseSprite != null);
+            if (baseSprite != null) baseSlot.sprite = baseSprite;
+        }
+
         FillIngredients(recipe.Ingredients);
         FillTools(recipe.RequiredTool);
+    }
+
+    // 生地パネルと同じ絵を使う（なければ SO の画像）
+    private Sprite FindKijiSprite(IngredientData kiji)
+    {
+        if (kiji == null) return null;
+
+        foreach (ClickChoice choice in FindObjectsByType<ClickChoice>(FindObjectsSortMode.None))
+        {
+            if (choice.Kiji == kiji && choice.PanelSprite != null)
+                return choice.PanelSprite;
+        }
+
+        return kiji.IngredientSprite;
     }
 
     private void FillIngredients(IngredientData[] items)
@@ -40,7 +81,8 @@ public class RecipeHUD : MonoBehaviour
 
     private void FillTools(ToolData[] tools)
     {
-        if (toolSlots == null) return;
+        // レシピに道具がない時はツールパネルをそのまま表示する
+        if (toolSlots == null || tools == null || tools.Length == 0) return;
 
         for (int i = 0; i < toolSlots.Length; i++)
         {

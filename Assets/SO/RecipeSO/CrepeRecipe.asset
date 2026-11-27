@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
   m_Name: CrepeRecipe
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  RecipeName: クレープ
+  RecipeName: Crepe
   RecipeImage: {fileID: 0}
-  RecipeBase: {fileID: 0}
+  RecipeBase: {fileID: 11400000, guid: 5d8cf2d70a24411283a930d7f8d22dd5, type: 2}
   Ingredients:
   - {fileID: 11400000, guid: 5870256fbc697d04784dc91d5475db5d, type: 2}
   - {fileID: 11400000, guid: 4507db6a856645244b379e851d0b207a, type: 2}

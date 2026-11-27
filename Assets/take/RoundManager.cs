@@ -23,12 +23,13 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private int round = 1;
     [SerializeField] private float roundTime = 10f;
     [SerializeField] private float timerBeforeNextRound = 2f;
+    [SerializeField] private bool autoStart = true; // OFF = StartScreen から StartRound() を呼ぶ
 
     [Header("Recipes（材料が少ない順）")]
     [SerializeField] private RecipeData[] recipes;
 
     [Header("Recipe Base（ベース材料のドロップを必須にするか）")]
-    [SerializeField] private bool requireRecipeBase = false;
+    [SerializeField] private bool requireRecipeBase = true;
 
     [Header("Timer UI")]
     [SerializeField] private TMP_Text timerText;
@@ -57,7 +58,8 @@ public class RoundManager : MonoBehaviour
             return;
         }
 
-        StartRound();
+        if (autoStart)
+            StartRound();
     }
 
     // ラウンド開始・リトライ
@@ -78,7 +80,7 @@ public class RoundManager : MonoBehaviour
         currentState = RoundState.Playing;
         RemainingTime = roundTime;
         availableIngredients = 0;
-        // ベース材料はまだスポーンしないので、デフォルトでは判定しない
+        // requireRecipeBase が ON なら生地（RecipeBase）のドロップが必要
         recipeBaseSelected = !requireRecipeBase || CurrentRecipe.RecipeBase == null;
         recipeBaseCorrect = recipeBaseSelected;
         UpdateTimer();
@@ -133,7 +135,13 @@ public class RoundManager : MonoBehaviour
         Debug.Log($"[Round] Ingredient {availableIngredients}/{RequiredNumber}");
         IngredientAdded?.Invoke(availableIngredients, RequiredNumber);
 
-        if (availableIngredients >= RequiredNumber)
+        TryComplete();
+    }
+
+    // 材料がそろい、生地も正しければクリア
+    private void TryComplete()
+    {
+        if (availableIngredients >= RequiredNumber && recipeBaseSelected && recipeBaseCorrect)
             RoundSuccess();
     }
 
@@ -142,9 +150,15 @@ public class RoundManager : MonoBehaviour
         if (currentState != RoundState.Playing)
             return;
 
-        recipeBaseSelected = true;
-        recipeBaseCorrect = isCorrect;
         Debug.Log($"[Round] Recipe Base result: {isCorrect}");
+
+        // 間違った生地はペナルティだけ（DropZone側）。正しい生地で選択完了
+        if (!isCorrect)
+            return;
+
+        recipeBaseSelected = true;
+        recipeBaseCorrect = true;
+        TryComplete();
     }
 
     public void RoundSuccess()
@@ -153,10 +167,7 @@ public class RoundManager : MonoBehaviour
             return;
 
         if (!recipeBaseSelected || !recipeBaseCorrect)
-        {
-            RoundFail();
-            return;
-        }
+            return; // 生地がまだ → クリアしない（待つ）
 
         StopRoundTimer();
         currentState = RoundState.Success;

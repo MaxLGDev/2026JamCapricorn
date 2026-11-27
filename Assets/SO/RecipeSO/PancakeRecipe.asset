@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
   m_Name: PancakeRecipe
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  RecipeName: パンケーキ
+  RecipeName: Pancake
   RecipeImage: {fileID: 0}
-  RecipeBase: {fileID: 0}
+  RecipeBase: {fileID: 11400000, guid: cc420a99028541e88cb39e9810394d77, type: 2}
   Ingredients:
   - {fileID: 11400000, guid: 5870256fbc697d04784dc91d5475db5d, type: 2}
   - {fileID: 11400000, guid: 95a0de39993805b449cc61e2ad3eff98, type: 2}
