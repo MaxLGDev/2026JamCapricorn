@@ -11,6 +11,16 @@ public class EventManager : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 100f;
 
+    private RectTransform canvasRect;
+
+    private void Awake()
+    {
+        Canvas canvas = FindFirstObjectByType<Canvas>();
+
+        if (canvas != null)
+            canvasRect = canvas.GetComponent<RectTransform>();
+    }
+
     private void OnEnable()
     {
         RoundManager.RoundStarted += OnRoundStarted;
@@ -21,16 +31,13 @@ public class EventManager : MonoBehaviour
         RoundManager.RoundStarted -= OnRoundStarted;
     }
 
-    // ラウンド開始イベント
     private void OnRoundStarted(int round, RecipeData recipe)
     {
         Debug.Log("[EventManager] Round Started!");
 
-        // 発生確率を判定
         if (Random.Range(0f, 100f) < eventProbability)
         {
             Debug.Log("[EventManager] Movement Event Triggered!");
-
             StartCoroutine(StartIngredientMovement());
         }
         else
@@ -39,10 +46,8 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    // 食材の移動開始
     private IEnumerator StartIngredientMovement()
     {
-        // 食材の生成完了を待つ
         yield return null;
 
         DragAndDrop[] objects =
@@ -52,14 +57,13 @@ public class EventManager : MonoBehaviour
         {
             RectTransform rect = obj.GetComponent<RectTransform>();
 
-            if (rect == null)
+            if (rect == null || canvasRect == null)
                 continue;
 
             StartCoroutine(MoveIngredient(rect));
         }
     }
 
-    // 食材の移動
     private IEnumerator MoveIngredient(RectTransform rect)
     {
         Vector2 direction =
@@ -67,8 +71,36 @@ public class EventManager : MonoBehaviour
 
         while (rect != null)
         {
-            rect.anchoredPosition +=
-                direction * moveSpeed * Time.deltaTime;
+            Vector2 position = rect.anchoredPosition;
+
+            position += direction * moveSpeed * Time.deltaTime;
+
+            Vector3[] corners = new Vector3[4];
+            rect.GetLocalCorners(corners);
+
+            float halfWidth = rect.rect.width * 0.5f;
+            float halfHeight = rect.rect.height * 0.5f;
+
+            float margin = 30f;
+
+            float minX = canvasRect.rect.xMin + halfWidth + margin;
+            float maxX = canvasRect.rect.xMax - halfWidth - margin;
+            float minY = canvasRect.rect.yMin + halfHeight + margin;
+            float maxY = canvasRect.rect.yMax - halfHeight - margin;
+
+            if (position.x < minX || position.x > maxX)
+            {
+                direction.x *= -1;
+                position.x = Mathf.Clamp(position.x, minX, maxX);
+            }
+
+            if (position.y < minY || position.y > maxY)
+            {
+                direction.y *= -1;
+                position.y = Mathf.Clamp(position.y, minY, maxY);
+            }
+
+            rect.anchoredPosition = position;
 
             yield return null;
         }
