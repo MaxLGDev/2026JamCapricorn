@@ -9,15 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 651f05e10febd7e4ba94594bddc1433c, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
   m_Name: DrinkRecipeData
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  recipeName: "\u70AD\u9178\u679C\u6C41\u30B8\u30E5\u30FC\u30B9"
-  recipeImage: {fileID: 0}
-  mainIngredient: {fileID: 11400000, guid: 6cf93308d7fcf294e877ac6e3484179b, type: 2}
-  ingredients:
-  - {fileID: 11400000, guid: abc6f5663b837af48aa4d15b5802cdfc, type: 2}
-  - {fileID: 11400000, guid: 79278cebd1cc852448dd73c3eb3ae51f, type: 2}
-  requiredTools:
-  - {fileID: 11400000, guid: f56ba37d3fa53ff43857e9acf1c66e8d, type: 2}
-  - {fileID: 11400000, guid: 1021d43481e17e445b34f7a7dee6279b, type: 2}
+  RecipeName: 
+  RecipeImage: {fileID: 0}
+  RecipeBase: {fileID: 0}
+  Ingredients: []
+  RequiredTool: []
