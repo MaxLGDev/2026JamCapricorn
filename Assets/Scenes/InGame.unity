@@ -295,15 +295,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IngredientSpawner
   round1StartCount: 2
   ingredients:
-  - {fileID: -5946493812074891402, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
-  - {fileID: 4280629453980347976, guid: 13e94852500f74345a1156e941437e16, type: 3}
-  - {fileID: 4629149160334750045, guid: a7dc63c63bde83a4daaeb67d08117f05, type: 3}
-  - {fileID: 4629149160334750045, guid: d0c9b7840d5a1674cb72932c14fa8056, type: 3}
-  - {fileID: 4629149160334750045, guid: 20727e624ffe1ca44b783bc78dc65611, type: 3}
-  testRequired:
-  - {fileID: -5946493812074891402, guid: 0ef98c19054db6c4681b2e4c8f62a946, type: 3}
-  - {fileID: 4280629453980347976, guid: 13e94852500f74345a1156e941437e16, type: 3}
-  - {fileID: 4629149160334750045, guid: a7dc63c63bde83a4daaeb67d08117f05, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  ingredientPrefab: {fileID: 0}
+  recipe: {fileID: 0}
   itemsAddedPerRound: 1
   maxTotalIngredients: 18
   maxTotalBonusIngredients: 3
@@ -666,6 +664,70 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &1592737972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1592737974}
+  - component: {fileID: 1592737973}
+  m_Layer: 0
+  m_Name: RoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1592737973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592737972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e301896a6bb4fb4795e320dac094bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoundManager
+  round: 1
+  roundTime: 10
+  timerBeforeNextRound: 2
+  baseRequiredNumber: 3
+  timerText: {fileID: 0}
+  OnRoundStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRoundSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRoundFail:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNextRound:
+    m_PersistentCalls:
+      m_Calls: []
+  OnIngredientAdded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &1592737974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592737972}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1641396598
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,3 +984,4 @@ SceneRoots:
   - {fileID: 1641396599}
   - {fileID: 148526047}
   - {fileID: 718493624}
+  - {fileID: 1592737974}
