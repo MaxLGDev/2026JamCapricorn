@@ -11,6 +11,27 @@ public class DropZone : MonoBehaviour, IDropHandler
     [SerializeField] private IngredientData _correctIngredient;
 
     /// <summary>
+    /// 3Dのドロップ判定に必要なColliderを確認する。
+    /// </summary>
+    private void Awake()
+    {
+        if (!TryGetComponent<Collider>(out var dropCollider))
+        {
+            Debug.LogError(
+                $"[DropZone] {name}: ドロップ判定用の3D Colliderが必要です。",
+                this);
+            return;
+        }
+
+        if (!dropCollider.enabled)
+        {
+            Debug.LogWarning(
+                $"[DropZone] {name}: Colliderが無効になっています。",
+                this);
+        }
+    }
+
+    /// <summary>
     /// 正解ならtrue、不正解ならfalseを通知するイベント。
     /// Inspectorでラウンド管理側の受け取りメソッドを登録する。
     /// </summary>
