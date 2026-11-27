@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
   m_Name: SoupRecipeData
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  RecipeName: 
+  RecipeName: Misosiru
   RecipeImage: {fileID: 0}
-  RecipeBase: {fileID: 0}
-  Ingredients: []
-  RequiredTool: []
+  RecipeBase: {fileID: 11400000, guid: 221215337bc97e5489c69bd1a87ada82, type: 2}
+  Ingredients:
+  - {fileID: 11400000, guid: b12b91d798475c246ab93bd795d86525, type: 2}
+  - {fileID: 11400000, guid: 7d3c24ebbe411c74b869fd3e54d6f4fe, type: 2}
+  - {fileID: 11400000, guid: af7979ca715dc1147aa0243c08a4fc32, type: 2}
+  - {fileID: 11400000, guid: b2aa61c0ad8769a4b838f4b9991afb24, type: 2}
+  RequiredTool:
+  - {fileID: 11400000, guid: 3a1debaf9c01b554d8f4e319b5d88c9b, type: 2}

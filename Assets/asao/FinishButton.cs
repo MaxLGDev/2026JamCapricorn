@@ -6,6 +6,6 @@ public class FinishButton : MonoBehaviour
 {
     public void OnClicked()
     {
-        SceneManager.LoadScene("TitleScene");
+        SceneManager.LoadScene("MainGame2");
     }
 }

@@ -6,6 +6,6 @@ public class NextStageButton : MonoBehaviour
 {
     public void OnClicked()
     {
-        SceneManager.LoadScene("MainGame1");
+        SceneManager.LoadScene("MainGame3");
     }
 }

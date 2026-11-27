@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de41940889970d45b2439a70f068be9, type: 3}
   m_Name: Tromi
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
-  IngredientName: 
+  IngredientName: Tromi
   IngredientSprite: {fileID: 0}
   IsBonus: 0
