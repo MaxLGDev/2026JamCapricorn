@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class RecipeData : ScriptableObject
 {
-    private Ingredient ingredientBase;
-    public Ingredient IngredientBase => ingredientBase;
     public string RecipeName;//料理の名前
     public Sprite RecipeImage;//料理の画像
     public IngredientData RecipeBase; //メイン材料
