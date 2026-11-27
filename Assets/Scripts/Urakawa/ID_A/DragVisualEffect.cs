@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// ドラッグ中の拡大と影を切り替える。
@@ -8,7 +9,7 @@ public class DragVisualEffect : MonoBehaviour
 {
     [Header("表示対象")]
     [SerializeField] private RectTransform _visual;
-    [SerializeField] private GameObject _shadow;
+    [SerializeField] private Shadow _shadow;
 
     [Header("拡大倍率")]
     [SerializeField, Range(0.1f, 3.0f)] private float _dragScale = 1.1f;
@@ -51,7 +52,7 @@ public class DragVisualEffect : MonoBehaviour
         // _visualのスケールを元のスケール × 拡大倍率に設定する。
         _visual.localScale = _originalScale * _dragScale;
         // 影を表示する。
-        _shadow.SetActive(true);
+        _shadow.enabled = true;
     }
 
     /// <summary>
@@ -63,7 +64,7 @@ public class DragVisualEffect : MonoBehaviour
         // 保存したスケールへ戻す。
         _visual.localScale = _originalScale;
         // 影を非表示にする。
-        _shadow.SetActive(false);
+        _shadow.enabled = false;
     }
 
     /// <summary>
