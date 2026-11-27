@@ -86,9 +86,9 @@ public class DragAndDrop : MonoBehaviour,
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
 
-        if (_ingredientData == null)
+        if (_ingredientData == null && _toolData == null)
         {
-            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataが設定されていません。", this);
+            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataまたはToolDataが設定されていません。", this);
             return;
         }
     }
@@ -106,9 +106,9 @@ public class DragAndDrop : MonoBehaviour,
             return;
         }
 
-        if (_ingredientData == null)
+        if (_ingredientData == null && _toolData == null)
         {
-            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataが設定されていません。", this);
+            Debug.LogError($"[DragAndDrop] {IngredientDisplayName}: IngredientDataまたはToolDataが設定されていません。", this);
             return;
         }
 
