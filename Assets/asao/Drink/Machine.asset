@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56d72cf87afe19243b18a97b6022a433, type: 3}
+  m_Script: {fileID: 11500000, guid: 1de41940889970d45b2439a70f068be9, type: 3}
   m_Name: Machine
   m_EditorClassIdentifier: Assembly-CSharp::ToolData
-  toolName: 
-  toolImage: {fileID: 0}
+  IngredientName: 
+  IngredientSprite: {fileID: 0}
+  IsBonus: 0
