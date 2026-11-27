@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 public class ScoreSystem : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class ScoreSystem : MonoBehaviour
     [SerializeField, Min(1)] private int roundsPerMultiplierIncrease = 3;
     [SerializeField, Min(0)] private int multiplierIncrease = 10;
 
-    private int totalScore;
+    private float totalScore;
     private int currentRound = 1;
 
     private void OnEnable()
@@ -42,8 +43,9 @@ public class ScoreSystem : MonoBehaviour
             return;
         }
 
-        Match match = Regex.Match(remainingTimeText.text, @"-?\d+");
-        if (!int.TryParse(match.Value, out int remainingTime))
+        Match match = Regex.Match(remainingTimeText.text, @"-?\d+(?:[\.,]\d+)?");
+        string remainingTimeTextValue = match.Value.Replace(',', '.');
+        if (!float.TryParse(remainingTimeTextValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float remainingTime))
         {
             return;
         }
@@ -59,7 +61,7 @@ public class ScoreSystem : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + totalScore.ToString();
+            scoreText.text = "Score: " + totalScore.ToString("0.##", CultureInfo.InvariantCulture);
         }
     }
 }
