@@ -119,6 +119,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &420338176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 420338178}
+  - component: {fileID: 420338177}
+  m_Layer: 0
+  m_Name: EventManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &420338177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420338176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6278e5840a00d94b852a63ac404a0f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventManager
+  moveSpeed: 2
+--- !u!4 &420338178
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420338176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 377.86642, y: 222.1216, z: -8.2093}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &676188999
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,31 +376,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoundManager
   round: 1
   roundTime: 10
+  timerBeforeNextRound: 2
+  recipes:
+  - {fileID: 11400000, guid: 9521fed3e6b18ba468ca2c852116acb4, type: 2}
   timerText: {fileID: 2094836646}
-  OnRoundStart:
-    m_PersistentCalls:
-      m_Calls: []
-  OnRoundSuccess:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 997543234}
-        m_TargetAssemblyTypeName: RoundManager, Assembly-CSharp
-        m_MethodName: NextRound
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnRoundFail:
-    m_PersistentCalls:
-      m_Calls: []
-  OnNextRound:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!4 &997543235
 Transform:
   m_ObjectHideFlags: 0
@@ -739,3 +763,4 @@ SceneRoots:
   - {fileID: 676189003}
   - {fileID: 862562328}
   - {fileID: 997543235}
+  - {fileID: 420338178}
