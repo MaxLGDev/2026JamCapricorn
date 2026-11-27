@@ -7,6 +7,30 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class DropZone : MonoBehaviour, IDropHandler
 {
+    [Header("正解の食材")]
+    [SerializeField] private IngredientData _correctIngredient;
+
+    /// <summary>
+    /// 3Dのドロップ判定に必要なColliderを確認する。
+    /// </summary>
+    private void Awake()
+    {
+        if (!TryGetComponent<Collider>(out var dropCollider))
+        {
+            Debug.LogError(
+                $"[DropZone] {name}: ドロップ判定用の3D Colliderが必要です。",
+                this);
+            return;
+        }
+
+        if (!dropCollider.enabled)
+        {
+            Debug.LogWarning(
+                $"[DropZone] {name}: Colliderが無効になっています。",
+                this);
+        }
+    }
+
     /// <summary>
     /// 正解ならtrue、不正解ならfalseを通知するイベント。
     /// Inspectorでラウンド管理側の受け取りメソッドを登録する。
@@ -15,7 +39,7 @@ public class DropZone : MonoBehaviour, IDropHandler
     private UnityEvent<bool> _onDropJudged = new UnityEvent<bool>();
 
     /// <summary>
-    /// ドロップされた食材を受け付け、成功した場合のみ判定結果を通知する。
+    /// 食材を判定し、ドラッグの終了処理を完了してから結果を通知する。
     /// </summary>
     /// <param name="eventData">ドロップ操作の情報。</param>
     public void OnDrop(PointerEventData eventData)
@@ -46,31 +70,42 @@ public class DropZone : MonoBehaviour, IDropHandler
             return;
         }
 
-        // 受付に失敗した場合は、正解判定や結果通知を行わない。
-        if (!dragAndDrop.AcceptDrop())
+        if (_correctIngredient == null)
+        {
+            Debug.LogError(
+                $"[DropZone] {name}: 正解の食材が設定されていません。",
+                this);
+            return;
+        }
+
+        if (dragAndDrop.IngredientData == null)
+        {
+            Debug.LogWarning(
+                $"[DropZone] {name}: {droppedItem.name}のIngredientDataがありません。",
+                this);
+            return;
+        }
+
+        bool isCorrect = IsCorrectIngredient(dragAndDrop.IngredientData);
+
+        // 正解なら現在位置に残し、不正解なら開始位置へ戻す。
+        if (!dragAndDrop.TryCompleteDrop(eventData.pointerId, isCorrect))
         {
             return;
         }
 
-        Debug.Log(
-            $"[DropZone] {name}: {droppedItem.name}を受け付けました。",
-            this);
-
-        // エリア内への受付と、食材の正解・不正解を分けて扱う。
-        bool isCorrect = IsCorrectIngredient(droppedItem);
+        // 位置と入力設定の復元後に通知する
         NotifyResult(isCorrect);
     }
 
     /// <summary>
     /// ドロップされた食材が正解か判定する。
     /// </summary>
-    /// <param name="ingredient">ドロップされた食材。</param>
+    /// <param name="ingredientData">ドロップされた食材。</param>
     /// <returns>正解ならtrue、不正解ならfalse。</returns>
-    private bool IsCorrectIngredient(GameObject ingredient)
+    private bool IsCorrectIngredient(IngredientData ingredientData)
     {
-        // TODO: 食材IDなどを使って正解条件と比較する。
-
-        return false;
+        return ingredientData == _correctIngredient;
     }
 
     /// <summary>
