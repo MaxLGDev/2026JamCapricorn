@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e36073371dabdc429261c06be4bca30, type: 3}
+  m_Name: CakeRecipe
+  m_EditorClassIdentifier: Assembly-CSharp::RecipeData
+  RecipeName: Cake
+  RecipeImage: {fileID: 0}
+  RecipeBase: {fileID: 11400000, guid: 5c30a0f8a7b644d4a8f7c5eb9b54fbc5, type: 2}
+  Ingredients:
+  - {fileID: 11400000, guid: 4507db6a856645244b379e851d0b207a, type: 2}
+  - {fileID: 11400000, guid: 2042f291f950a5d44a1f59914f2321cc, type: 2}
+  - {fileID: 11400000, guid: 5ecbd35a72dd4534c895a1602e44717c, type: 2}
+  RequiredTool: []

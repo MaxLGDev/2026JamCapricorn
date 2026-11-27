@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
  
 // BGM・効果音を管理するクラス（音量は固定）
-public class SoundManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
 {
     // シングルトン参照
-    public static SoundManager Instance;
+    public static AudioManager Instance;
  
     // 音データ
     public Sound[] musicSounds, effectSounds;

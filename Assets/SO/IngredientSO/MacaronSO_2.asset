@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de41940889970d45b2439a70f068be9, type: 3}
   m_Name: MacaronSO_2
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
-  IngredientName: 
-  IngredientSprite: {fileID: 0}
+  IngredientName: Macaron 2
+  IngredientSprite: {fileID: 21300000, guid: 86977aa68bb43dc4898451a8d8f6396f, type: 3}
   IsBonus: 0

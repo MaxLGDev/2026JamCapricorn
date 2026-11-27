@@ -8,4 +8,5 @@ public class IngredientData : ScriptableObject
     public Sprite IngredientSprite;
     
     public bool IsBonus;
+    public bool IsPenalty; // ドロップすると時間が大きく減る
 }
