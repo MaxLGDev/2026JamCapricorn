@@ -66,7 +66,7 @@ public class IngredientSpawner : MonoBehaviour
         
         foreach(IngredientData data in toSpawn)
         {
-            Vector2 spawnPosition = new Vector2(Random.Range(r.xMin, r.xMax), Random.Range(r.yMin, r.yMax));
+            Vector2 spawnPosition = new Vector2(Random.Range(r.xMin + 10, r.xMax - 10), Random.Range(r.yMin + 10, r.yMax - 10));
             
             Ingredient spawned = Instantiate(ingredientPrefab, spawnArea);
             ((RectTransform)spawned.transform).anchoredPosition = spawnPosition;

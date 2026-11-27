@@ -4,10 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
 {
-    [SerializeField] public TMP_Text timerText;
-    [SerializeField] public TextMeshProUGUI recipeText;        // 料理名
-    [SerializeField] public TextMeshProUGUI ingredientsText;   // 必要食材を出すテキスト
-    [SerializeField] public TextMeshProUGUI toolsText;         // ← 追加: 必要な道具を出すテキスト
+    [SerializeField] public TMP_Text timerText; // ← 追加: 必要な道具を出すテキスト
     [SerializeField] public RecipeData[] recipes;
     //  [SerializeField] public ToolData[] tools;   // StartTimerのInspectorで直接登録
     [SerializeField] public Button[] lockButtons;   //カウント中に押せなくするボタン
@@ -19,9 +16,6 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
 
     public void Start()
     {
-        recipeText.text = "";
-        ingredientsText.text = "";
-        toolsText.text = ""; // ← 追加
         SetButtonsInteractable(false);   //カウント中は無効
     }
 
@@ -60,7 +54,7 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
         }
 
         CurrentRecipe = recipes[Random.Range(0, recipes.Length)];
-        recipeText.text = CurrentRecipe.RecipeName;
+        //recipeText.text = CurrentRecipe.RecipeName;
         ShowIngredients();
         ShowTools(); // ← 追加
     }
@@ -73,7 +67,7 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
             if (item == null) continue;
             text += "・" + item.IngredientName + "\n";
         }
-        ingredientsText.text = text;
+        //ingredientsText.text = text;
     }
     private void ShowTools()
     {
@@ -83,7 +77,7 @@ public class StartTimer : MonoBehaviour//ゲーム始まる前のタイマー
             if (tool == null) continue;
             text += "・" + tool.toolName + "\n";
         }
-        toolsText.text = text;
+        //toolsText.text = text;
     }
 
     public void HideTimer()
